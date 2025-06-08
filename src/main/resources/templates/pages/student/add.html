@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Manager - Add</title>
+</head>
+<body>
+    <form th:action="@{/student/add}" th:object="${student}" method="post">
+        <label>Name:</label>
+        <!-- *name tell thymleaf that the field name is inside object student -->
+         <!-- so I don't need to write student.name -->
+        <input type="text" th:field="*{name}" placeholder="Enter student name" required>
+        <label>Email:</label>
+        <input type="email" th:field="*{email}" placeholder="Enter student email" required>
+        <label>Major:</label>
+        <input type="text" th:field="*{major}" placeholder="Enter student major" required>
+        <!-- save button -->
+         <button type="submit">Add Student</button>
+    </form>
+</body>
+</html>

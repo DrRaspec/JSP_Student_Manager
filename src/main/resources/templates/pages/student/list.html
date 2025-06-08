@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Students</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Major</th>
+        </tr>
+        <tr th:each="student: ${students}">
+            <td th:text="${student.id}">ID</td>
+            <td th:text="${student.name}">Name</td>
+            <td th:text="${student.email}">Email</td>
+            <td th:text="${student.major}">Major</td>
+            <td>
+                <a th:href="@{/student/edit/{id}(id=${student.id})}">Edit</a>
+            </td>
+            <td>
+                <a th:href="@{/student/delete/{id}(id=${student.id})}">Delete</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
