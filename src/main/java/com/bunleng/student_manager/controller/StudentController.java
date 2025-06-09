@@ -2,7 +2,12 @@ package com.bunleng.student_manager.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +19,35 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bunleng.student_manager.model.StudentModel;
 import com.bunleng.student_manager.util.StudentIdGenerator;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class StudentController {
     private List<StudentModel> students = new ArrayList<>();
+
+    @ModelAttribute
+    public void addGlobalAttributes(Model model, HttpServletRequest request) {
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        model.addAttribute("currentLocale", currentLocale);
+        model.addAttribute("currentLang", currentLocale.getLanguage());
+    }
+
+    // Home page
+    @GetMapping("/")
+    public String home(Model model) {
+        int totalStudents = students.size();
+        String mostPopularMajor = students.stream()
+        .collect(Collectors.groupingBy(StudentModel::getMajor, Collectors.counting()))
+        .entrySet()
+        .stream()
+        .max(Map.Entry.comparingByValue())
+        .map(Map.Entry::getKey)
+        .orElse("N/A");
+        model.addAttribute("students", students);
+        model.addAttribute("totalStudents", totalStudents);
+        model.addAttribute("mostPopularMajor", mostPopularMajor);
+        return "index";
+    }
 
     // show the student form
     @GetMapping("/student/add")
@@ -38,7 +69,7 @@ public class StudentController {
     public String addStudent(@ModelAttribute("student") StudentModel student) {
         student.setId(StudentIdGenerator.generateId());
         students.add(student);
-        return "redirect:/student/list";
+        return "redirect:/";
     }
 
 
@@ -64,7 +95,7 @@ public class StudentController {
             }
         }
 
-        return "redirect:/student/list";
+        return "redirect:/";
     }
 
     @GetMapping("/student/delete/{id}")
